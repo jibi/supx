@@ -119,7 +119,7 @@ END
 	def find_photo(timestamp, media_size)
 		date = Time.at(timestamp.to_s[0..-4].to_i).strftime("%Y%m%d")
 
-		Dir.entries("./#@data_folder}/Media/WhatsApp Images/").grep(Regexp.new("IMG-" + date)).each do |p|
+		Dir.entries("./#{@data_folder}/Media/WhatsApp Images/").grep(Regexp.new("IMG-" + date)).each do |p|
 			path = "./data/Media/WhatsApp Images/" + p
 			return p if File.size(path) == media_size
 		end
