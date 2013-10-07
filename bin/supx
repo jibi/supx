@@ -13,4 +13,8 @@
 require 'supx'
 
 supx = Supx::SupxManager.new('data')
-#puts supx.read_messages('contact')
+supx.contact_list.each do |c|
+	puts c[:number] + " " + c[:name]
+end
+#puts supx.read_messages('number')
+

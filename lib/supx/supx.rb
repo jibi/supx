@@ -16,16 +16,19 @@ class SupxManager
 	include Smile
 
 	def initialize(path)
-		@data_folder = path
-		@msg_db_path = path + '/msgstore.db'
+		@data_folder     = path
+		@msg_db_path     = path + '/msgstore.db'
+		@contact_db_path = path + '/wa.db'
 
 		db_connect
 	end
 
 	def read_messages(contact)
+		contact = contact + "@s.whatsapp.net"
+
 		open_html
 
-		@db[:messages].filter(:key_remote_jid => contact).order(:_id).each do |msg|
+		@message_db[:messages].filter(:key_remote_jid => contact).order(:_id).each do |msg|
 			@msg = msg
 			$stderr.print "\r" + msg[:_id].to_s
 
@@ -34,6 +37,17 @@ class SupxManager
 		end
 
 		close_html
+	end
+
+	def contact_list
+		list = []
+		@message_db[:chat_list].where(Sequel.like(:key_remote_jid, '%@s%%')).distinct.each do |m|
+			list << { :number => m[:key_remote_jid].split("@")[0],
+				  :name   => @contact_db[:wa_contacts].where(:jid => m[:key_remote_jid]).first[:display_name]
+			}
+		end
+
+		list
 	end
 
 private

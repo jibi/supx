@@ -39,13 +39,43 @@ module Database
 		Integer     :origin
 	}
 
+	@chat_list_schema = Proc.new {
+		primary_key :_id
+		String      :key_remote_jid
+		Integer     :message_table_id
+	}
+
+	@contacts_schema = Proc.new {
+		primary_key :id
+		String      :jid
+		Bool        :is_whatsapp_user
+		String      :status
+		String      :number
+		Integer     :raw_contact_id
+		String      :display_name
+		Integer     :phone_type
+		String      :phone_label
+		Integer     :unseen_msg_count
+		Integer     :photo_ts
+		Integer     :thumb_ts
+		Integer     :photo_id_timestamp
+		String      :given_name
+		String      :family_name
+		String      :wa_name
+		String      :sort_name
+	}
 	class << self
-		attr_reader :messages_schema
+		attr_reader :messages_schema, :chat_list_schema
+		attr_reader :contacts_schema
 	end
 
 	def db_connect
-		@db = Sequel.connect('sqlite://' + @db_path)
-		@db.create_table?(:messages, &Supx::Database.messages_schema)
+		@message_db = Sequel.connect('sqlite://' + @msg_db_path)
+		@message_db.create_table?(:messages,  &Supx::Database.messages_schema)
+		@message_db.create_table?(:chat_list, &Supx::Database.chat_list_schema)
+
+		@contact_db = Sequel.connect('sqlite://' + @contact_db_path)
+		@contact_db.create_table?(:wa_contacts, &Supx::Database.contacts_schema)
 	end
 end
 end
