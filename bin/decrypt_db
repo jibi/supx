@@ -9,15 +9,15 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 #
 
-if [ "$#" -ne "2" ]; then
+if [ "$#" -ne "1" ]; then
 	echo "fail: not enough args. Usage:"
-	echo "$0 [db.sqlite.crypt] [db.sqlite]"
+	echo "$0 db.sqlite.crypt"
 
 	exit 1
 fi
 
 in="$1"
-out="$2"
+out="msgstore.db"
 key="346a23652a46392b4d73257c67317e352e3372482177652c"
 
 openssl enc -d -aes-192-ecb -in $in -out $out -K $key
