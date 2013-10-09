@@ -24,6 +24,14 @@ true
 >> File.open('wa_dump.html', 'w') {|f| f.write(html) }
 ```
 
+## My backup database is encrypted!
+Don't worry! just use
+
+```
+decrypt_db msgstore.db.crypt
+```
+
 ## TODO & bugs
 * there's no support for group conversations
+* at the moment it only support android databases
 
