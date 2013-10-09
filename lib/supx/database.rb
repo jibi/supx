@@ -70,12 +70,20 @@ module Database
 	end
 
 	def db_connect
+		raise 'No messages database found' if not File.exists?(@msg_db_path)
+
 		@message_db = Sequel.connect('sqlite://' + @msg_db_path)
 		@message_db.create_table?(:messages,  &Supx::Database.messages_schema)
 		@message_db.create_table?(:chat_list, &Supx::Database.chat_list_schema)
 
-		@contact_db = Sequel.connect('sqlite://' + @contact_db_path)
-		@contact_db.create_table?(:wa_contacts, &Supx::Database.contacts_schema)
+		if File.exists?(@contact_db_path)
+			@contacts   = true
+			@contact_db = Sequel.connect('sqlite://' + @contact_db_path)
+			@contact_db.create_table?(:wa_contacts, &Supx::Database.contacts_schema)
+		else
+			@contact = false
+		end
+
 	end
 end
 end
