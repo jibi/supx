@@ -8,7 +8,7 @@ Gem::Specification.new {|s|
 	s.summary = 'Dump your WhatsApp conversations into cool html'
 	s.description = '.'
 	s.files = Dir['lib/**/*.rb']
-	s.executables = ['supx', 'decrypt_db']
+	s.executables = ['decrypt_wa_db']
 
 	s.add_dependency 'sequel'
 }
