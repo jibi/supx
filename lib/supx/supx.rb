@@ -40,15 +40,29 @@ class SupxManager
 	end
 
 	def contact_list
-		list = []
+		slist = []
+		glist = []
 
-		@message_db[:chat_list].where(Sequel.like(:key_remote_jid, '%@s%%')).distinct.each do |m|
-			list << { :number => m[:key_remote_jid].split("@")[0] }
-			list.last[:name] = (@contact_db[:wa_contacts].where(:jid =>
-				m[:key_remote_jid]).first[:display_name]) if @contacts == true
+		@message_db[:chat_list].where{ Sequel.like(:key_remote_jid, '%@s%%') | Sequel.like(:key_remote_jid, '%@g%%') }.each do |m|
+			next if m.nil?
+
+			c = { :id => m[:key_remote_jid] }
+
+			if @contacts == true
+				contact = @contact_db[:wa_contacts].where(:jid => m[:key_remote_jid])
+				next if contact.count.zero?
+
+				c[:name] = contact.first[:display_name]
+			end
+
+			if m[:key_remote_jid] =~ /@s/
+				slist << c
+			else
+				glist << c
+			end
 		end
 
-		list
+		{:contacts => slist, :groups => glist}
 	end
 
 private
