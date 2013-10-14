@@ -35,6 +35,11 @@ class SupxManager
 		open_html
 
 		@message_db[:messages].filter(:key_remote_jid => contact).order(:_id).each do |msg|
+
+			# XXX: dont know what kind of message is this (but we
+			# dont want to show these messages)
+			next if @conversation == :group and msg[:media_wa_type].eql?(0) and msg[:media_size].nonzero?
+
 			@msg = msg
 			$stderr.print "\r" + msg[:_id].to_s
 
