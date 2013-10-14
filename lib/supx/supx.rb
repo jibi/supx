@@ -24,7 +24,13 @@ class SupxManager
 	end
 
 	def read_messages(contact)
-		contact = contact + "@s.whatsapp.net"
+		if contact =~ /@s.whatsapp.net/
+			@conversation =:single
+		elsif contact =~ /@g.us/
+			@conversation = :group
+		else
+			raise 'Invalid contact'
+		end
 
 		open_html
 
@@ -74,6 +80,7 @@ private
 	body { background-color: #f1eae0; font: 'lucida grande, thaoma, verdana'; }
 	#container {width: 800px; margin: 0px auto }
 	.msg { width: 80%; background: #dde; padding: 16px; overflow: hidden; border-radius: 4px; }
+	.msg > .g_sender { font-weight: bold; padding-bottom: 12px }
 	.msg > .time { margin-top: 16px; font-size: 9px; }
 	.r { background-color: #f3ffe9; float: right; text-align: right; }
 	.l { background-color: #fcfbf6; float: left; }
@@ -100,6 +107,16 @@ END
 
 	def html_msg_content
 		@html += "<div id='wrapper'><div class='msg " + (@msg[:key_from_me] == 1 ? "r" : "l") + "'>"
+
+		if @conversation == :group and @msg[:key_from_me] == 0
+			@html += "<div class='g_sender'>"
+			if @contacts
+				@html += @contact_db[:wa_contacts].where(:jid => @msg[:remote_resource]).first[:display_name]
+			else
+				@html += @msg[:remote_resource]
+			end
+			@html += "</div>"
+		end
 
 		@html += case @msg[:media_wa_type]
 		when "0"
