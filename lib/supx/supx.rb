@@ -94,7 +94,7 @@ private
   .msg > .time { margin-top: 16px; font-size: 9px; }
   .r { background-color: #f3ffe9; float: right; text-align: right; }
   .l { background-color: #fcfbf6; float: left; }
-  .date { background-color: #d8eff7; width: 200px; margin: 16px auto; border-radius: 4px; border: 4px; height: 24;  text-align: center}
+  .info { background-color: #d8eff7; width: 600px; margin: 16px auto; border-radius: 4px; border: 4px; height: 24px;  text-align: center}
   #wrapper { overflow:auto; padding: 4px; }
 </style>
 </head><body><div id=container>"
@@ -110,19 +110,34 @@ private
 
     if @last_date.nil? or @last_date != date
       @last_date =  date
-      @html      += "<div class='date'>" + date + "</div>"
+      @html      += "<div class='info'>Date changed: " + date + "</div>"
     end
   end
 
   def get_contact_name(contact)
-      if @contacts
-        return @contact_db[:wa_contacts].where(:jid => contact).first[:display_name]
-      else
-        return @cur_msg[:remote_resource]
-      end
+    if @contacts
+      return @contact_db[:wa_contacts].where(:jid => contact).first[:display_name]
+    else
+      return @cur_msg[:remote_resource]
+    end
   end
 
-  def html_msg
+  def html_info_msg
+    @html += "<div class='info'>"
+    @html += case @cur_msg[:media_size]
+      when 1
+        "Group name changed: " + @cur_msg[:data]
+      when 4
+        get_contact_name(@cur_msg[:remote_resource]) + " joined"
+      when 5
+        get_contact_name(@cur_msg[:remote_resource]) + " left"
+      when 6
+        "[TODO]: changed group pic"
+      end
+    @html += "</div>"
+  end
+
+  def html_contact_msg
     @html += "<div id='wrapper'><div class='msg " + (@cur_msg[:key_from_me] == 1 ? "r" : "l") + "'>"
 
     if @conversation == :group and @cur_msg[:key_from_me] == 0
@@ -142,6 +157,14 @@ private
     @html += "<div class=time>" + time + "</div>"
 
     @html += "</div></div>\n"
+  end
+
+  def html_msg
+    if @cur_msg[:status] == 6
+      html_info_msg
+    else
+      html_contact_msg
+    end
   end
 
   def get_msg_text
@@ -183,4 +206,3 @@ private
   end
 end
 end
-
