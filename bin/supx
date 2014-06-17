@@ -1,0 +1,92 @@
+#!/usr/bin/ruby
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#                    Version 2, December 2004
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+#
+#  0. You just DO WHAT THE FUCK YOU WANT TO.
+#
+
+require 'sinatra/base'
+require 'rack/contrib/try_static'
+
+require 'supx'
+
+class WebSupx < Sinatra::Base
+  use Rack::TryStatic, :root => 'wa', :urls => %w[/]
+  @@supx = Supx::SupxManager.new(Dir.pwd + '/wa')
+
+  configure do
+    set :root, File.dirname(__FILE__) + "/../"
+  end
+
+  helpers do
+    def put_date_changed(m)
+      '<div class="date"><b>' + m[:data] + "</b></div>"
+    end
+
+    def put_group_name(m)
+      '<div class="info">Group name changed to: <b>' + m[:data] + "</b></div>"
+    end
+
+    def put_group_join(m)
+      '<div class="info"><b>' + m[:data] + "</b> joined group</div>"
+    end
+
+    def put_group_left(m)
+      '<div class="info"><b>' + m[:data] + "</b> left group</div>"
+    end
+
+    def put_contact_msg(m)
+      msg = "<div id='wrapper'><div class='msg " + (m[:from_me] == 1 ? "r" : "l") + "'>"
+
+      if m[:from_me] == 0 and m[:sender]
+        msg += "<div class='g_sender'>" + m[:sender] + "</div>"
+      end
+
+      msg += m[:data] + "</div></div>"
+
+      msg
+    end
+  end
+
+  get '/' do
+    @contacts_table = ""
+
+    contacts = @@supx.get_contacts
+
+    contacts.each do |c|
+      @contacts_table += "<tr><td><a href='/chat/#{c[:id]}'>" + c[:name] + "</a></td></tr>"
+    end
+
+    erb :contacts
+  end
+
+  get '/chat/:chat_id' do
+    msgs = @@supx.read_msgs(params[:chat_id])
+    @html_messages  = ''
+
+    msgs.each do |m|
+      @html_messages +=
+        case m[:what]
+        when :date_changed
+          put_date_changed(m)
+        when :group_name
+          put_group_name(m)
+        when :group_join
+          put_group_join(m)
+        when :group_left
+          put_group_left(m)
+        when :msg
+          put_contact_msg(m)
+        end
+    end
+
+    erb :chat
+  end
+end
+
+WebSupx.run!
+

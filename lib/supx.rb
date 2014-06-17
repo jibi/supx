@@ -9,6 +9,8 @@
 #
 
 require 'supx/database'
+require 'supx/contact'
+require 'supx/message'
 require 'supx/smile'
 require 'supx/supx'
 

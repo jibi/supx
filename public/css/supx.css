@@ -1,0 +1,70 @@
+body {
+	font-weight: lighter;
+}
+
+.attachment img {
+    max-width: 700px;
+    width: 100%;
+}
+
+#container {
+	width: 720px;
+	margin: 0px auto
+}
+
+.msg {
+	width: 75%;
+	background: #dde;
+	padding: 24px;
+	overflow: hidden;
+	border-radius: 4px;
+}
+
+.msg > .g_sender {
+	font-weight: bold;
+	padding-bottom: 12px
+}
+
+.msg > .time {
+	margin-top: 16px;
+	font-size: 9px;
+}
+
+.r {
+	background-color: #4488ee;
+	color: #fff;
+	float: right;
+	text-align: right;
+}
+
+.l {
+	background-color: #eee;
+	float: left;
+}
+
+.info {
+	width: 400px;
+	margin: 16px auto;
+	border-top: 1px solid #dde;
+	border-bottom: 1px solid #dde;
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+}
+
+.date {
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+	margin: 16px auto;
+	width: 220px;
+	background: #aea;
+	color: white;
+	border-radius: 4px;
+}
+
+#wrapper {
+	overflow:auto;
+	padding: 4px;
+}
+

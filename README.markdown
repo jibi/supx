@@ -1,37 +1,27 @@
 # supX: whatsapp extractor
-Dump your WhatsApp conversations into cool html.
+Browse your whatsapp conversations.
 
-## What do you need
-A folder (lets call it data) with:
-
-* **msgstore.db**: whatsapp messages database
-* **wa.db**: whatsapp contacts database (optional)
-* **media**: folder with all whatsapp media
+## Supported platforms
+At the moment I've tested supx only with a rooted android on a galaxy nexus
 
 ## Usage
+Build and install the gem
 
-```ruby
->> require 'supx'
-true
-
->> supx = Supx::SupxManager.new('data')
-#<Supx::SupxManager:[..]>
-
->> supx.contact_list
-[{:number=>"000000000000", :name=>"name1"}, {:number=>"000000000001", :name=>"name2"}, .. ]
-
->> html = supx.read_messages('000000000000')
->> File.open('wa_dump.html', 'w') {|f| f.write(html) }
+```sh
+$ gem build supx.gemspec
+$ gem install ./supx-0.0.2.gem
 ```
 
-## My backup database is encrypted!
-Don't worry! just use
-
-```
-decrypt_db msgstore.db.crypt
+run the supx dumper (you need `adb` running)
+```sh
+$ supx_dumper
 ```
 
-## TODO & bugs
-* there's no support for group conversations
-* at the moment it only support android databases
+and launch the sinatra web server on the same directory
+
+```sh
+$ supx
+```
+
+then go to [http://localhost:4567](http://localhost:4567) and browse your conversations
 

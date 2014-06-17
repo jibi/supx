@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#                    Version 2, December 2004
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+#
+#  0. You just DO WHAT THE FUCK YOU WANT TO.
+#
+
+# supx data dumper
+#
+#    "it dumps all the whatsapp data you need"
+#
+# you need a rooted device.
+#
+
+adb shell "mkdir /sdcard/supx"
+adb shell "su -c 'cp -r /data/data/com.whatsapp /sdcard/supx'"
+
+mkdir wa
+mkdir wa/avatars
+adb pull /sdcard/supx/com.whatsapp/files/Avatars wa/avatars
+
+mkdir wa/db
+adb pull /sdcard/supx/com.whatsapp/databases/wa.db wa/db
+adb pull /sdcard/supx/com.whatsapp/databases/msgstore.db wa/db
+
+mkdir wa/media
+adb pull /sdcard/WhatsApp/Media wa/media
+
+adb shell "su -c 'rm -r /sdcard/supx'"
+
