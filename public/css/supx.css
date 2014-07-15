@@ -13,7 +13,7 @@ body {
 }
 
 .msg {
-	width: 75%;
+	max-width: 75%;
 	background: #dde;
 	padding: 24px;
 	overflow: hidden;
